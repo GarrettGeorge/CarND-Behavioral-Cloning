@@ -26,7 +26,7 @@ def generator(samples, batch_size=32):
                     filename = source_path.split('/')[-1]
                     current_path = './data/IMG/' + filename
                     if os.path.isfile(current_path):
-                        image = cv2.imread(current_path)
+                        image = cv2.cvtColor(cv2.imread(current_path), cv2.COLOR_BGR2RGB)
                         images.append(image)
                         if i == 1:
                             measurements.append(float(line[3]) + 0.15)
@@ -68,15 +68,15 @@ model.add(Convolution2D(48,5,5,subsample=(2,2),activation='relu'))
 model.add(Convolution2D(64,3,3,activation='relu'))
 model.add(Convolution2D(64,3,3,activation='relu'))
 model.add(Flatten())
-model.add(Dense(200))
+model.add(Dense(200, activation='relu'))
 model.add(Dropout(0.6))
-model.add(Dense(100))
+model.add(Dense(100, activation='relu'))
 model.add(Dropout(0.6))
-model.add(Dense(50))
+model.add(Dense(50, activation='relu'))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
 model.fit_generator(train_generator, samples_per_epoch= 
             len(train_samples), validation_data=validation_generator, 
-            nb_val_samples=len(validation_samples), nb_epoch=7)
+            nb_val_samples=len(validation_samples), nb_epoch=5)
 model.save('model-gen.h5')
